@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — D Invites</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="assets/css/global.css">
+<script src="https://js.paystack.co/v2/inline.js"></script>
+
+<style>
+  /* ---------- Page-only styles (dashboard) ---------- */
+  body{ display:flex; min-height:100vh; }
+
+  /* ---- Sidebar ---- */
+  .sidebar{
+    width:240px; flex-shrink:0; border-right:1px solid var(--border);
+    display:flex; flex-direction:column; padding:20px 16px; position:sticky; top:0; height:100vh;
+  }
+  .sidebar-brand{ display:flex; align-items:center; gap:10px; padding:8px 10px 24px; font-weight:700; }
+  .sidebar-brand .mark{ width:30px; height:30px; border-radius:8px; background:var(--accent); color:var(--accent-text); display:flex; align-items:center; justify-content:center; font-weight:800; }
+
+  .side-nav{ display:flex; flex-direction:column; gap:2px; flex:1; }
+  .side-link{
+    display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:var(--radius-sm);
+    font-size:14px; font-weight:500; color:var(--text-secondary); border:none; background:none; text-align:left; width:100%;
+  }
+  .side-link i{ width:16px; text-align:center; font-size:14px; }
+  .side-link:hover{ background:var(--bg-card); color:var(--text); }
+  .side-link.active{ background:var(--accent-soft); color:var(--accent); }
+
+  .side-foot{ border-top:1px solid var(--border); padding-top:14px; margin-top:14px; }
+  .side-user{ display:flex; align-items:center; gap:10px; padding:6px 10px 12px; }
+  .side-user .avatar{ width:32px; height:32px; border-radius:50%; background:var(--bg-elevated); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; }
+  .side-user .name{ font-size:13px; font-weight:600; }
+  .side-user .tier{ font-size:11px; color:var(--text-muted); }
+
+  @media (max-width:900px){
+    .sidebar{ display:none; }
+  }
+
+  /* ---- Main ---- */
+  .main{ flex:1; min-width:0; padding:28px 32px 60px; }
+  .topbar{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; flex-wrap:wrap; gap:14px; }
+  .topbar h1{ font-size:22px; font-weight:800; letter-spacing:-.01em; }
+  .topbar p{ font-size:13.5px; color:var(--text-secondary); margin-top:4px; }
+
+  .section{ display:none; }
+  .section.active{ display:block; }
+
+  /* ---- Banner ---- */
+  .banner{
+    display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:var(--radius-md);
+    margin-bottom:24px; border:1px solid var(--border);
+  }
+  .banner.warn{ background:rgba(232,181,75,.1); border-color:rgba(232,181,75,.35); }
+  .banner.warn i{ color:var(--warn); font-size:18px; }
+  .banner .txt{ flex:1; font-size:13.5px; }
+  .banner .txt b{ display:block; margin-bottom:2px; }
+
+  /* ---- Stat grid ---- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+  .stat-card{ padding:20px; }
+  .stat-card .label{ font-size:12px; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+  .stat-card .value{ font-size:26px; font-weight:800; }
+  .stat-card .sub{ font-size:12px; color:var(--text-muted); margin-top:4px; }
+  .level-bar{ height:6px; background:var(--bg-elevated); border-radius:99px; margin-top:10px; overflow:hidden; }
+  .level-bar .fill{ height:100%; background:var(--accent); border-radius:99px; }
+  @media (max-width:900px){ .stat-grid{ grid-template-columns:repeat(2,1fr); } }
+
+  /* ---- Getting started (static tips card — no bot logic, just guidance) ---- */
+  .tips-card{ display:flex; gap:16px; padding:22px; margin-bottom:28px; }
+  .tips-avatar{ width:40px; height:40px; border-radius:50%; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .tips-card h3{ font-size:14.5px; font-weight:700; margin-bottom:10px; }
+  .tips-list{ display:flex; flex-direction:column; gap:9px; }
+  .tips-list li{ display:flex; gap:10px; font-size:13px; color:var(--text-secondary); align-items:flex-start; }
+  .tips-list i{ color:var(--accent); font-size:12px; margin-top:2px; }
+
+  /* ---- Events grid ---- */
+  .section-toolbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; gap:12px; flex-wrap:wrap; }
+  .events-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:16px; }
+  .event-card{ padding:18px; }
+  .event-card .thumb{ height:110px; border-radius:var(--radius-sm); background:var(--bg-elevated); margin-bottom:14px; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:22px; background-size:cover; background-position:center; }
+  .event-card .type{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); font-weight:700; margin-bottom:4px; }
+  .event-card h4{ font-size:15.5px; font-weight:700; margin-bottom:6px; }
+  .event-card .meta{ font-size:12.5px; color:var(--text-secondary); display:flex; flex-direction:column; gap:3px; margin-bottom:14px; }
+  .event-card .row-actions{ display:flex; gap:8px; }
+  .event-card .row-actions .btn{ flex:1; padding:8px; font-size:12.5px; }
+  .empty-state{ text-align:center; padding:60px 20px; color:var(--text-secondary); }
+  .empty-state i{ font-size:30px; color:var(--text-muted); margin-bottom:14px; }
+
+  /* ---- RSVP table ---- */
+  .table-wrap{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th{ text-align:left; padding:12px 14px; color:var(--text-muted); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--border); }
+  td{ padding:13px 14px; border-bottom:1px solid var(--border); color:var(--text-secondary); }
+  tr:last-child td{ border-bottom:none; }
+  .pill-yes{ color:var(--accent); background:var(--accent-soft); padding:3px 10px; border-radius:99px; font-size:11.5px; font-weight:600; }
+  .pill-no{ color:var(--danger); background:var(--danger-soft); padding:3px 10px; border-radius:99px; font-size:11.5px; font-weight:600; }
+
+  /* ---- Referral ---- */
+  .referral-card{ padding:26px; margin-bottom:20px; }
+  .referral-code-row{ display:flex; gap:10px; margin:16px 0; }
+  .referral-code-row input{ font-weight:700; letter-spacing:.05em; }
+  .referral-stats{ display:flex; gap:32px; margin-top:8px; }
+  .referral-stats .n{ font-size:22px; font-weight:800; }
+  .referral-stats .l{ font-size:12px; color:var(--text-muted); }
+
+  /* ---- Billing ---- */
+  .plan-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:18px; }
+  .plan-card{ padding:22px; display:flex; flex-direction:column; }
+  .plan-card.current{ border-color:var(--accent); }
+  .plan-card .name{ font-weight:700; font-size:15px; margin-bottom:4px; }
+  .plan-card .price{ font-size:22px; font-weight:800; margin-bottom:12px; }
+  .plan-card .price span{ font-size:12px; font-weight:500; color:var(--text-muted); }
+  .plan-card ul{ display:flex; flex-direction:column; gap:8px; margin-bottom:18px; flex:1; }
+  .plan-card li{ font-size:12.5px; color:var(--text-secondary); display:flex; gap:8px; }
+  .plan-card li i{ color:var(--accent); font-size:11px; margin-top:2px; }
+  @media (max-width:900px){ .plan-grid{ grid-template-columns:1fr; } }
+
+  .usage-row{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-secondary); margin-bottom:6px; }
+  .usage-bar{ height:6px; background:var(--bg-elevated); border-radius:99px; overflow:hidden; margin-bottom:16px; }
+  .usage-bar .fill{ height:100%; background:var(--accent); }
+  .usage-bar .fill.danger{ background:var(--danger); }
+
+  /* ---- Security ---- */
+  .settings-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .settings-card{ padding:24px; }
+  .settings-card h3{ font-size:15px; font-weight:700; margin-bottom:4px; }
+  .settings-card .desc{ font-size:12.5px; color:var(--text-secondary); margin-bottom:18px; }
+  .danger-zone{ border-color:rgba(255,107,107,.35); }
+  @media (max-width:900px){ .settings-grid{ grid-template-columns:1fr; } }
+
+  /* ---- Modal ---- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.6); display:none;
+    align-items:center; justify-content:center; z-index:200; padding:20px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{ width:100%; max-width:480px; padding:26px; max-height:88vh; overflow-y:auto; }
+  .modal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+  .modal-head h3{ font-size:16px; font-weight:700; }
+  .modal-head button{ background:none; border:none; color:var(--text-secondary); font-size:16px; }
+
+  .img-upload{
+    border:1.5px dashed var(--border); border-radius:var(--radius-sm); padding:20px;
+    text-align:center; cursor:pointer; color:var(--text-secondary); font-size:13px;
+  }
+  .img-upload:hover{ border-color:var(--accent); color:var(--text); }
+  .img-upload img{ max-height:120px; margin:0 auto 10px; border-radius:6px; }
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="sidebar">
+  <a href="index.html" class="sidebar-brand"><span class="mark">D</span> D Invites</a>
+
+  <nav class="side-nav">
+    <button class="side-link active" data-section="overview" title="Your snapshot: events, RSVPs, points and level"><i class="fa-solid fa-house"></i> Overview</button>
+    <button class="side-link" data-section="events" title="Create and manage your event pages"><i class="fa-solid fa-calendar-star"></i> My Events</button>
+    <button class="side-link" data-section="rsvps" title="See who's coming to each event"><i class="fa-solid fa-users"></i> Guests &amp; RSVPs</button>
+    <button class="side-link" data-section="referrals" title="Earn points for inviting other hosts"><i class="fa-solid fa-gift"></i> Referrals</button>
+    <button class="side-link" data-section="billing" title="Your plan, usage, and payment history"><i class="fa-solid fa-credit-card"></i> Billing</button>
+    <button class="side-link" data-section="settings" title="Password, sign-out, and account safety"><i class="fa-solid fa-shield-halved"></i> Security</button>
+  </nav>
+
+  <div class="side-foot">
+    <div class="side-user">
+      <div class="avatar" id="user-avatar">–</div>
+      <div>
+        <div class="name" id="user-name">Loading…</div>
+        <div class="tier" id="user-tier">–</div>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-block" id="logout-btn" title="Sign out of this device"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</button>
+  </div>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<main class="main">
+
+  <!-- ===== OVERVIEW ===== -->
+  <section class="section active" data-panel="overview">
+    <div class="topbar">
+      <div>
+        <h1 id="welcome-heading">Welcome back</h1>
+        <p>Here's how your events are doing.</p>
+      </div>
+      <button class="btn btn-primary" data-goto="events" title="Start a new event page"><i class="fa-solid fa-plus"></i> New event</button>
+    </div>
+
+    <div id="expired-banner"></div>
+
+    <div class="stat-grid">
+      <div class="card stat-card">
+        <div class="label"><i class="fa-solid fa-calendar-star"></i> Active events</div>
+        <div class="value" id="stat-events">–</div>
+      </div>
+      <div class="card stat-card">
+        <div class="label"><i class="fa-solid fa-users"></i> Total RSVPs</div>
+        <div class="value" id="stat-rsvps">–</div>
+      </div>
+      <div class="card stat-card">
+        <div class="label"><i class="fa-solid fa-star"></i> Points</div>
+        <div class="value" id="stat-points">–</div>
+      </div>
+      <div class="card stat-card">
+        <div class="label"><i class="fa-solid fa-ranking-star"></i> Level</div>
+        <div class="value" id="stat-level">–</div>
+        <div class="level-bar"><div class="fill" id="level-fill" style="width:0%"></div></div>
+        <div class="sub" id="level-sub">–</div>
+      </div>
+    </div>
+
+    <div class="card tips-card">
+      <div class="tips-avatar"><i class="fa-solid fa-sparkles"></i></div>
+      <div>
+        <h3>Getting started with D Invites</h3>
+        <ul class="tips-list">
+          <li><i class="fa-solid fa-check"></i> Create your first event under <b>My Events</b> — pick a type, add your date and story.</li>
+          <li><i class="fa-solid fa-check"></i> Share your event link on WhatsApp — every open is a chance to be discovered.</li>
+          <li><i class="fa-solid fa-check"></i> Watch RSVPs land in real time under <b>Guests &amp; RSVPs</b>.</li>
+          <li><i class="fa-solid fa-check"></i> Share your referral code under <b>Referrals</b> to earn bonus points.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EVENTS ===== -->
+  <section class="section" data-panel="events">
+    <div class="topbar">
+      <div><h1>My Events</h1><p>Create, edit, and share your event pages.</p></div>
+    </div>
+    <div class="section-toolbar">
+      <span class="text-muted" id="events-limit-note" style="font-size:13px;"></span>
+      <button class="btn btn-primary" id="new-event-btn" title="Your event limit depends on your plan — see Billing"><i class="fa-solid fa-plus"></i> New event</button>
+    </div>
+    <div class="events-grid" id="events-grid"></div>
+  </section>
+
+  <!-- ===== RSVPS ===== -->
+  <section class="section" data-panel="rsvps">
+    <div class="topbar">
+      <div><h1>Guests &amp; RSVPs</h1><p>See who's confirmed for each event.</p></div>
+    </div>
+    <div class="section-toolbar">
+      <select id="rsvp-event-select" style="max-width:280px;"></select>
+      <button class="btn btn-ghost" id="export-csv-btn" title="Export is a Pro/Premium feature"><i class="fa-solid fa-file-arrow-down"></i> Export CSV</button>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Guest</th><th>Phone</th><th>Party size</th><th>Status</th><th>Message</th><th>Date</th></tr></thead>
+        <tbody id="rsvp-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== REFERRALS ===== -->
+  <section class="section" data-panel="referrals">
+    <div class="topbar">
+      <div><h1>Referrals</h1><p>Share your code — earn points every time a friend joins.</p></div>
+    </div>
+    <div class="card referral-card">
+      <h3 style="font-size:15px;font-weight:700;">Your referral code</h3>
+      <p class="text-secondary" style="font-size:13px;margin-top:4px;">You get <b style="color:var(--text)">50 points</b> when a friend signs up and creates their first event.</p>
+      <div class="referral-code-row">
+        <input id="referral-code" readonly>
+        <button class="btn btn-ghost" id="copy-code-btn" title="Copy your referral code"><i class="fa-regular fa-copy"></i> Copy</button>
+      </div>
+      <div class="referral-code-row">
+        <input id="referral-link" readonly>
+        <button class="btn btn-ghost" id="copy-link-btn" title="Copy your full referral link"><i class="fa-regular fa-copy"></i> Copy link</button>
+      </div>
+      <div class="referral-stats">
+        <div><div class="n" id="referral-count">–</div><div class="l">friends referred</div></div>
+        <div><div class="n" id="referral-points">–</div><div class="l">points earned</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BILLING ===== -->
+  <section class="section" data-panel="billing">
+    <div class="topbar">
+      <div><h1>Billing</h1><p>Your plan, usage, and upgrade options.</p></div>
+    </div>
+
+    <div class="card" style="padding:22px; margin-bottom:22px;">
+      <div class="usage-row"><span>Active events</span><span id="usage-events-label">–</span></div>
+      <div class="usage-bar"><div class="fill" id="usage-events-fill" style="width:0%"></div></div>
+      <div id="billing-expiry" class="text-secondary" style="font-size:13px;"></div>
+    </div>
+
+    <div class="plan-grid" id="plan-grid"></div>
+  </section>
+
+  <!-- ===== SECURITY ===== -->
+  <section class="section" data-panel="settings">
+    <div class="topbar">
+      <div><h1>Security</h1><p>Keep your account safe.</p></div>
+    </div>
+    <div class="settings-grid">
+      <div class="card settings-card">
+        <h3>Change password</h3>
+        <p class="desc">Use a password you don't use anywhere else.</p>
+        <form id="change-password-form">
+          <div class="field">
+            <label for="new-password">New password</label>
+            <div class="input-wrap">
+              <i class="icon-left fa-solid fa-lock"></i>
+              <input id="new-password" type="password" placeholder="Min 6 characters" minlength="6" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="password-submit">Update password</button>
+          <div class="status-msg" id="password-status"></div>
+        </form>
+      </div>
+
+      <div class="card settings-card">
+        <h3>Sessions</h3>
+        <p class="desc">This signs you out on this device. If you suspect unauthorized access, change your password first.</p>
+        <button class="btn btn-ghost btn-block" id="logout-btn-2" title="Sign out of this device"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out here</button>
+      </div>
+
+      <div class="card settings-card danger-zone" style="grid-column:1/-1;">
+        <h3 style="color:var(--danger);">Danger zone</h3>
+        <p class="desc">Deleting your account removes your events and RSVP data permanently. This can't be undone.</p>
+        <button class="btn btn-ghost btn-block" style="border-color:var(--danger); color:var(--danger);" id="delete-account-btn">Delete my account</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ NEW/EDIT EVENT MODAL ============ -->
+<div class="modal-overlay" id="event-modal-overlay">
+  <div class="card modal">
+    <div class="modal-head">
+      <h3 id="event-modal-title">New event</h3>
+      <button id="close-event-modal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="event-form">
+      <input type="hidden" id="event-id">
+
+      <div class="field">
+        <label for="event-title">Event title</label>
+        <input id="event-title" placeholder="e.g. Amara & Chidi's Wedding" required>
+      </div>
+
+      <div class="field">
+        <label for="event-type">Event type</label>
+        <select id="event-type">
+          <option value="wedding">Wedding</option>
+          <option value="birthday">Birthday</option>
+          <option value="baby_shower">Baby Shower</option>
+          <option value="anniversary">Anniversary</option>
+          <option value="graduation">Graduation</option>
+          <option value="general">General celebration</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="event-date">Date &amp; time</label>
+        <input id="event-date" type="datetime-local">
+      </div>
+
+      <div class="field">
+        <label for="event-venue">Venue</label>
+        <input id="event-venue" placeholder="e.g. Grand Palm Gardens, Lekki">
+      </div>
+
+      <div class="field">
+        <label for="event-story">Your story <span class="text-muted">(shown to guests)</span></label>
+        <textarea id="event-story" rows="3" placeholder="Tell your guests what this day means to you..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Cover image <span class="text-muted">(hosted on DevTemple CDN)</span></label>
+        <div class="img-upload" id="img-upload-zone" title="Images are stored via cdn.devtem.org, keeping your database small">
+          <img id="img-preview" style="display:none;">
+          <div id="img-upload-label"><i class="fa-solid fa-image"></i><br>Click to upload a cover photo</div>
+        </div>
+        <input type="file" id="event-image-input" accept="image/png,image/jpeg,image/webp" style="display:none;">
+        <input type="hidden" id="event-image-url">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="event-submit" style="margin-top:8px;">Save event</button>
+      <div class="status-msg" id="event-modal-status"></div>
+    </form>
+  </div>
+</div>
+
+<script src="assets/js/global.js"></script>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  // ---- Config ----
+  const SUPABASE_URL = tu;
+  const SUPABASE_ANON_KEY = tk; // safe to expose — RLS protects the data
+  const UPLOAD_ENDPOINT = 'https://YOUR-NETLIFY-SITE.netlify.app/.netlify/functions/upload-asset';
+  const PAYSTACK_VERIFY_ENDPOINT = 'https://api.invites.devtem.org/verify-paystack';
+  const PAYSTACK_PUBLIC_KEY = 'pk_live_YOUR_PUBLIC_KEY';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { $, $$, setStatus, setLoading } = window.DInvites;
+
+  let profile = null, session = null, events = [], tiers = {};
+
+  // ---- Auth guard ----
+  const { data: { session: s } } = await supabase.auth.getSession();
+  if (!s) { window.location.href = 'auth.html'; }
+  session = s;
+
+  supabase.auth.onAuthStateChange((event, sess) => {
+    if (event === 'SIGNED_OUT') window.location.href = 'auth.html';
+  });
+
+  // ---- Section nav ----
+  $$('.side-link, [data-goto]').forEach(btn => {
+    btn.addEventListener('click', () => goto(btn.dataset.section || btn.dataset.goto));
+  });
+  function goto(name){
+    $$('.side-link').forEach(b => b.classList.toggle('active', b.dataset.section === name));
+    $$('.section').forEach(sec => sec.classList.toggle('active', sec.dataset.panel === name));
+    if (name === 'rsvps') loadRsvps();
+  }
+
+  // ---- Load core data ----
+  async function loadAll(){
+    const { data: p } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+    profile = p;
+
+    const { data: tierRows } = await supabase.from('subscription_tiers').select('*');
+    tierRows.forEach(t => tiers[t.tier] = t);
+
+    const { data: ev } = await supabase.from('events').select('*').eq('host_id', session.user.id).order('created_at', { ascending:false });
+    events = ev || [];
+
+    renderSidebar();
+    renderOverview();
+    renderEvents();
+    renderRsvpEventSelect();
+    renderReferrals();
+    renderBilling();
+  }
+
+  function renderSidebar(){
+    const initial = (profile.full_name || session.user.email || '?')[0].toUpperCase();
+    $('user-avatar').textContent = initial;
+    $('user-name').textContent = profile.full_name || session.user.email;
+    $('user-tier').textContent = capitalize(profile.subscription_tier) + ' plan';
+    $('welcome-heading').textContent = `Welcome back, ${(profile.full_name || 'there').split(' ')[0]}`;
+  }
+
+  function capitalize(s){ return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+
+  // ---- Overview ----
+  async function renderOverview(){
+    $('stat-events').textContent = events.length;
+
+    const { count: rsvpCount } = await supabase
+      .from('rsvps').select('*', { count:'exact', head:true })
+      .in('event_id', events.map(e => e.id).length ? events.map(e => e.id) : ['00000000-0000-0000-0000-000000000000']);
+    $('stat-rsvps').textContent = rsvpCount || 0;
+
+    $('stat-points').textContent = profile.points;
+    $('stat-level').textContent = 'Level ' + profile.level;
+
+    const thresholds = [0,100,300,700,1500,Infinity];
+    const cur = thresholds[profile.level - 1] ?? 0;
+    const next = thresholds[profile.level] ?? cur + 1;
+    const pct = next === Infinity ? 100 : Math.min(100, Math.round(((profile.points - cur) / (next - cur)) * 100));
+    $('level-fill').style.width = pct + '%';
+    $('level-sub').textContent = next === Infinity ? 'Max level reached' : `${next - profile.points} points to level ${profile.level + 1}`;
+
+    // Payment expired banner
+    const expiredBanner = $('expired-banner');
+    if (profile.subscription_tier !== 'free' && profile.subscription_expires_at && new Date(profile.subscription_expires_at) < new Date()) {
+      expiredBanner.innerHTML = `
+        <div class="banner warn">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div class="txt"><b>Your ${capitalize(profile.subscription_tier)} plan has expired</b>You've been moved to Free limits. Renew to keep premium themes and higher RSVP limits.</div>
+          <button class="btn btn-primary" data-goto="billing">Renew plan</button>
+        </div>`;
+      $$('[data-goto]', expiredBanner).forEach(b => b.addEventListener('click', () => goto(b.dataset.goto)));
+    } else {
+      expiredBanner.innerHTML = '';
+    }
+  }
+
+  // ---- Events ----
+  function renderEvents(){
+    const tierLimit = tiers[profile.subscription_tier]?.max_active_events ?? 1;
+    $('events-limit-note').textContent = `${events.length} of ${tierLimit === 999 ? 'unlimited' : tierLimit} events used on your plan`;
+
+    const grid = $('events-grid');
+    if (!events.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-calendar-star"></i><p>No events yet — create your first one.</p></div>`;
+      return;
+    }
+    grid.innerHTML = events.map(ev => `
+      <div class="card event-card">
+        <div class="thumb" ${ev.cover_image_url ? `style="background-image:url('${ev.cover_image_url}')"` : ''}>
+          ${ev.cover_image_url ? '' : '<i class="fa-regular fa-image"></i>'}
+        </div>
+        <div class="type">${ev.event_type.replace('_',' ')}</div>
+        <h4>${escapeHtml(ev.title)}</h4>
+        <div class="meta">
+          <span><i class="fa-regular fa-calendar"></i> ${ev.event_date ? new Date(ev.event_date).toLocaleDateString() : 'No date set'}</span>
+          <span><i class="fa-regular fa-link"></i> /e/${ev.slug}</span>
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-ghost" data-copy="${window.location.origin}/e/${ev.slug}" title="Copy the shareable guest link"><i class="fa-regular fa-copy"></i> Copy link</button>
+          <button class="btn btn-ghost" data-edit="${ev.id}" title="Edit this event"><i class="fa-solid fa-pen"></i></button>
+        </div>
+      </div>
+    `).join('');
+
+    $$('[data-copy]', grid).forEach(b => b.addEventListener('click', () => {
+      navigator.clipboard.writeText(b.dataset.copy);
+      b.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+      setTimeout(() => b.innerHTML = '<i class="fa-regular fa-copy"></i> Copy link', 1500);
+    }));
+    $$('[data-edit]', grid).forEach(b => b.addEventListener('click', () => openEventModal(b.dataset.edit)));
+  }
+
+  function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+  // ---- Event modal ----
+  const overlay = $('event-modal-overlay');
+  $('new-event-btn').addEventListener('click', () => openEventModal());
+  $('close-event-modal').addEventListener('click', closeEventModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeEventModal(); });
+
+  function openEventModal(eventId){
+    const ev = events.find(e => e.id === eventId);
+    $('event-modal-title').textContent = ev ? 'Edit event' : 'New event';
+    $('event-id').value = ev?.id || '';
+    $('event-title').value = ev?.title || '';
+    $('event-type').value = ev?.event_type || 'wedding';
+    $('event-date').value = ev?.event_date ? new Date(ev.event_date).toISOString().slice(0,16) : '';
+    $('event-venue').value = ev?.venue || '';
+    $('event-story').value = ev?.story || '';
+    $('event-image-url').value = ev?.cover_image_url || '';
+    const preview = $('img-preview');
+    if (ev?.cover_image_url) { preview.src = ev.cover_image_url; preview.style.display = 'block'; $('img-upload-label').style.display = 'none'; }
+    else { preview.style.display = 'none'; $('img-upload-label').style.display = 'block'; }
+    setStatus($('event-modal-status'), '');
+    overlay.classList.add('open');
+  }
+  function closeEventModal(){ overlay.classList.remove('open'); }
+
+  $('img-upload-zone').addEventListener('click', () => $('event-image-input').click());
+  $('event-image-input').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      $('img-upload-label').innerHTML = '<i class="fa-solid fa-spinner spin"></i> Uploading…';
+      try {
+        const res = await fetch(UPLOAD_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileName: file.name, fileData: reader.result, userDir: session.user.id }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        $('event-image-url').value = data.url;
+        $('img-preview').src = data.url;
+        $('img-preview').style.display = 'block';
+        $('img-upload-label').style.display = 'none';
+      } catch (err) {
+        setStatus($('event-modal-status'), err.message, 'err');
+        $('img-upload-label').innerHTML = '<i class="fa-solid fa-image"></i><br>Click to upload a cover photo';
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  $('event-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = $('event-id').value;
+    const tierLimit = tiers[profile.subscription_tier]?.max_active_events ?? 1;
+    if (!id && events.length >= tierLimit) {
+      setStatus($('event-modal-status'), `Your ${capitalize(profile.subscription_tier)} plan allows ${tierLimit} active event(s). Upgrade to add more.`);
+      return;
+    }
+
+    const payload = {
+      host_id: session.user.id,
+      title: $('event-title').value.trim(),
+      event_type: $('event-type').value,
+      event_date: $('event-date').value || null,
+      venue: $('event-venue').value.trim(),
+      story: $('event-story').value.trim(),
+      cover_image_url: $('event-image-url').value || null,
+      slug: id ? undefined : ($('event-title').value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,40) + '-' + Math.random().toString(36).slice(2,6)),
+    };
+
+    setLoading($('event-submit'), true, 'Saving');
+    const { error } = id
+      ? await supabase.from('events').update(payload).eq('id', id)
+      : await supabase.from('events').insert(payload);
+    setLoading($('event-submit'), false);
+
+    if (error) { setStatus($('event-modal-status'), error.message); return; }
+    closeEventModal();
+    await loadAll();
+    goto('events');
+  });
+
+  // ---- RSVPs ----
+  function renderRsvpEventSelect(){
+    const sel = $('rsvp-event-select');
+    sel.innerHTML = events.map(e => `<option value="${e.id}">${escapeHtml(e.title)}</option>`).join('') || '<option>No events yet</option>';
+    sel.onchange = loadRsvps;
+  }
+  async function loadRsvps(){
+    const eventId = $('rsvp-event-select').value;
+    const tbody = $('rsvp-tbody');
+    if (!eventId) { tbody.innerHTML = ''; return; }
+    const { data } = await supabase.from('rsvps').select('*').eq('event_id', eventId).order('created_at', { ascending:false });
+    tbody.innerHTML = (data || []).map(r => `
+      <tr>
+        <td>${escapeHtml(r.guest_name)}</td>
+        <td>${r.guest_phone || '—'}</td>
+        <td>${r.guest_count}</td>
+        <td><span class="${r.attending ? 'pill-yes' : 'pill-no'}">${r.attending ? 'Attending' : "Can't make it"}</span></td>
+        <td>${r.message ? escapeHtml(r.message) : '—'}</td>
+        <td>${new Date(r.created_at).toLocaleDateString()}</td>
+      </tr>`).join('') || '<tr><td colspan="6" class="text-muted">No RSVPs yet.</td></tr>';
+  }
+
+  $('export-csv-btn').addEventListener('click', async () => {
+    if (!tiers[profile.subscription_tier]?.guest_export) {
+      alert('CSV export is a Pro/Premium feature — upgrade under Billing.');
+      goto('billing');
+      return;
+    }
+    const eventId = $('rsvp-event-select').value;
+    const { data } = await supabase.from('rsvps').select('*').eq('event_id', eventId);
+    const rows = [['Name','Phone','Party size','Attending','Message','Date'], ...(data||[]).map(r => [r.guest_name, r.guest_phone||'', r.guest_count, r.attending, r.message||'', r.created_at])];
+    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type:'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'guests.csv'; a.click();
+  });
+
+  // ---- Referrals ----
+  function renderReferrals(){
+    $('referral-code').value = profile.referral_code;
+    $('referral-link').value = `${window.location.origin}/auth.html?ref=${profile.referral_code}`;
+  }
+  $('copy-code-btn').addEventListener('click', () => { navigator.clipboard.writeText($('referral-code').value); flashCopied('copy-code-btn'); });
+  $('copy-link-btn').addEventListener('click', () => { navigator.clipboard.writeText($('referral-link').value); flashCopied('copy-link-btn'); });
+  function flashCopied(id){ const b = $(id); const orig = b.innerHTML; b.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; setTimeout(()=>b.innerHTML=orig,1500); }
+
+  (async () => {
+    const { data: refs } = await supabase.from('referrals').select('*').eq('referrer_id', session?.user?.id || '');
+    if (refs) {
+      $('referral-count').textContent = refs.length;
+      $('referral-points').textContent = refs.reduce((sum,r) => sum + (r.status === 'confirmed' ? r.reward_points : 0), 0);
+    }
+  })();
+
+  // ---- Billing ----
+  function renderBilling(){
+    const limit = tiers[profile.subscription_tier]?.max_active_events ?? 1;
+    const pct = limit === 999 ? Math.min(100, events.length) : Math.min(100, Math.round((events.length/limit)*100));
+    $('usage-events-label').textContent = `${events.length} / ${limit === 999 ? '∞' : limit} events`;
+    const fill = $('usage-events-fill');
+    fill.style.width = pct + '%';
+    fill.classList.toggle('danger', pct >= 90);
+
+    $('billing-expiry').textContent = profile.subscription_tier === 'free'
+      ? "You're on the Free plan."
+      : `Your ${capitalize(profile.subscription_tier)} plan ${new Date(profile.subscription_expires_at) < new Date() ? 'expired' : 'renews'} on ${new Date(profile.subscription_expires_at).toDateString()}.`;
+
+    const order = ['free','pro','premium'];
+    $('plan-grid').innerHTML = order.map(t => {
+      const tier = tiers[t];
+      const isCurrent = profile.subscription_tier === t;
+      return `
+        <div class="card plan-card ${isCurrent ? 'current' : ''}">
+          <div class="name">${capitalize(t)}</div>
+          <div class="price">${tier.price_ngn === 0 ? 'Free' : '₦' + tier.price_ngn.toLocaleString()}${tier.price_ngn ? '<span>/30 days</span>' : ''}</div>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> ${tier.max_active_events === 999 ? 'Unlimited' : tier.max_active_events} active event(s)</li>
+            <li><i class="fa-solid fa-check"></i> Up to ${tier.max_rsvps_per_event === 999999 ? 'unlimited' : tier.max_rsvps_per_event} RSVPs/event</li>
+            ${tier.premium_themes ? '<li><i class="fa-solid fa-check"></i> Premium themes</li>' : ''}
+            ${tier.guest_export ? '<li><i class="fa-solid fa-check"></i> Guest list export</li>' : ''}
+            ${tier.remove_badge ? '<li><i class="fa-solid fa-check"></i> No D Invites badge</li>' : ''}
+          </ul>
+          ${isCurrent ? '<button class="btn btn-ghost btn-block" disabled>Current plan</button>' :
+            (t === 'free' ? '' : `<button class="btn btn-primary btn-block" data-upgrade="${t}" title="Pay securely with Paystack">Upgrade to ${capitalize(t)}</button>`)}
+        </div>`;
+    }).join('');
+
+    $$('[data-upgrade]', $('plan-grid')).forEach(b => b.addEventListener('click', () => startPayment(b.dataset.upgrade)));
+  }
+
+  function startPayment(tier){
+    const amount = tiers[tier].price_ngn * 100; // kobo
+    const handler = PaystackPop.setup({
+      key: PAYSTACK_PUBLIC_KEY,
+      email: session.user.email,
+      amount,
+      currency: 'NGN',
+      ref: 'DINV-' + Date.now(),
+      callback: (response) => verifyPayment(response.reference, tier),
+      onClose: () => {},
+    });
+    handler.openIframe();
+  }
+
+  async function verifyPayment(reference, tier){
+    try {
+      const res = await fetch(PAYSTACK_VERIFY_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body: JSON.stringify({ reference, tier }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      alert(`You're now on the ${capitalize(tier)} plan.`);
+      await loadAll();
+      goto('billing');
+    } catch (err) {
+      alert('Payment verification failed: ' + err.message + ' — contact support.d-invite@devtem.org if you were charged.');
+    }
+  }
+
+  // ---- Security ----
+  $('change-password-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setLoading($('password-submit'), true, 'Updating');
+    const { error } = await supabase.auth.updateUser({ password: $('new-password').value });
+    setLoading($('password-submit'), false);
+    setStatus($('password-status'), error ? error.message : 'Password updated.', error ? 'err' : 'ok');
+    if (!error) $('new-password').value = '';
+  });
+
+  $('delete-account-btn').addEventListener('click', () => {
+    alert('Account deletion requires a support ticket for now — email support.d-invite@devtem.org and we\'ll process it within 48 hours. (This confirms intent before anything irreversible happens.)');
+  });
+
+  ['logout-btn','logout-btn-2'].forEach(id => $(id).addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = 'auth.html';
+  }));
+
+  loadAll();
+</script>
+</body>
+</html>
