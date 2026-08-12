@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page not found · D Invites</title>
+    <meta name="description" content="The page you're looking for doesn't exist. Let's get you back on track." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+
+    <style>
+        /* ---------- 404 page styles ---------- */
+        .error-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            padding: 40px 20px 60px;
+            text-align: center;
+        }
+
+        .error-card {
+            max-width: 520px;
+            padding: 48px 36px;
+            border-radius: var(--radius-lg);
+        }
+
+        .error-icon {
+            font-size: 72px;
+            color: var(--accent);
+            opacity: 0.6;
+            margin-bottom: 16px;
+        }
+
+        .error-card h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .error-card .sub {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .error-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .error-actions .btn {
+            min-width: 140px;
+        }
+
+        @media (max-width: 480px) {
+            .error-card {
+                padding: 32px 20px;
+            }
+            .error-icon {
+                font-size: 52px;
+            }
+            .error-card h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ NAV ============ -->
+    <header class="site-nav">
+        <div class="container">
+            <a href="/" class="nav-brand">
+                <img src="/assets/img/logo.png" alt="DevTemple Invites logo" height="35" />
+            </a>
+            <nav class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/#how">How it works</a>
+                <a href="/#pricing">Pricing</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/dashboard" class="btn btn-primary">Create an event</a>
+                <button class="nav-menu-btn" id="nav-menu-btn" aria-label="Menu" aria-expanded="false">
+                    <i class="fas fa-regular fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div class="nav-drawer" id="nav-drawer">
+            <a href="/#features">Features</a>
+            <a href="/#how">How it works</a>
+            <a href="/#pricing">Pricing</a>
+            <a href="auth.html">Log in</a>
+            <a href="/dashboard">Create an event</a>
+        </div>
+    </header>
+
+    <!-- ============ ERROR CONTENT ============ -->
+    <section class="error-section">
+        <div class="error-card card">
+            <div class="error-icon">
+                <i class="fa-regular fa-face-frown"></i>
+            </div>
+            <h1>404 – page not found</h1>
+            <p class="sub">
+                The page you're looking for doesn't exist, or it may have been moved.<br />
+                Let's get you back to somewhere useful.
+            </p>
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">
+                    <i class="fa-solid fa-house"></i> Homepage
+                </a>
+                <a href="/dashboard" class="btn btn-ghost">
+                    <i class="fa-solid fa-gauge-high"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="/" class="nav-brand" style="margin-bottom:12px; display:inline-flex;">
+                        <img src="/assets/img/logo.png" alt="DevTemple Invites logo" height="35" />
+                    </a>
+                    <p class="footer-brand-tagline">
+                        Create stunning invitation pages, manage RSVPs, and celebrate life's moments with the people you love.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <a href="/#features">Features</a>
+                    <a href="/#pricing">Pricing</a>
+                    <a href="/#how">How it works</a>
+                    <a href="/dashboard">Create an event</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="https://devtem.org">About DevTemple</a>
+                    <a href="https://devtem.org/#">Team</a>
+                    <a href="https://devtem.org/contact#">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="/privacy#">Privacy Policy</a>
+                    <a href="/terms#">Terms of Service</a>
+                    <a href="/cookie#">Cookie Policy</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="footer-social">
+                        <a href="https://x.com/DevtempT12979" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="https://tiktok.com/@devtem.org" aria-label="Tiktok"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com/@devtem_org" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://github.com/fscss-ttr" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="foot-meta">© 2026 D invites · invites.devtem.org</div>
+                <div class="foot-meta">Built by <a href="https://devtem.org">DevTemple</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/global.js"></script>
+</body>
+</html>
