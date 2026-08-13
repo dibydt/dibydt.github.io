@@ -3,64 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy · D Invites</title>
-    <meta name="description" content="D invites privacy policy — how we handle your data.">
 
+    <!-- ============ PRIMARY SEO ============ -->
+    <title>Privacy Policy · D Invites</title>
+    <meta name="description" content="D invites privacy policy – how we collect, use, and protect your personal data. Learn about your rights and our commitments.">
+    <meta name="keywords" content="D invites privacy, privacy policy, data protection, GDPR, CCPA, personal data, event platform privacy">
+    <meta name="author" content="DevTemple">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- ============ OPEN GRAPH ============ -->
+    <meta property="og:title" content="Privacy Policy · D Invites">
+    <meta property="og:description" content="D invites privacy policy – how we collect, use, and protect your personal data. Learn about your rights and our commitments.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://invites.devtem.org/privacy">
+    <meta property="og:site_name" content="D invites">
+    <meta property="og:image" content="https://invites.devtem.org/assets/img/logo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="D invites – Privacy Policy">
+    <meta property="og:locale" content="en_NG">
+
+    <!-- ============ TWITTER CARD ============ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Privacy Policy · D Invites">
+    <meta name="twitter:description" content="D invites privacy policy – how we collect, use, and protect your personal data.">
+    <meta name="twitter:image" content="https://invites.devtem.org/assets/img/logo.png">
+    <meta name="twitter:site" content="@DevtempT12979">
+    <meta name="twitter:creator" content="@DevtempT12979">
+
+    <!-- ============ CANONICAL ============ -->
+    <link rel="canonical" href="https://invites.devtem.org/privacy">
+
+    <!-- ============ FAVICON & THEME ============ -->
+    <link rel="icon" type="image/png" href="/assets/img/icon.png">
+    <link rel="apple-touch-icon" href="/assets/img/icon.png">
+    <meta name="theme-color" content="#00E6A0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ============ FONTS & STYLES ============ -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="assets/css/global.css">
 
+    <!-- ============ JSON‑LD: WebSite ============ -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "D invites",
+            "url": "https://invites.devtem.org",
+            "description": "Create beautiful event invitation pages, manage RSVPs, and celebrate life's moments with the people you love.",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://invites.devtem.org/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+    </script>
+
+    <!-- ============ JSON‑LD: Organization ============ -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "D invites",
+            "url": "https://invites.devtem.org",
+            "logo": "https://invites.devtem.org/assets/img/logo.png",
+            "description": "D invites helps you create stunning event invitation pages, track RSVPs in real time, and manage your guest list – all in one place.",
+            "foundingDate": "2026",
+            "founder": {
+                "@type": "Person",
+                "name": "DevTemple Team"
+            },
+            "sameAs": [
+                "https://x.com/DevtempT12979",
+                "https://tiktok.com/@devtem.org",
+                "https://www.youtube.com/@devtem_org",
+                "https://github.com/fscss-ttr"
+            ],
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "email": "support.d-invite@devtem.org",
+                "contactType": "Customer Support",
+                "availableLanguage": ["English"]
+            }
+        }
+    </script>
+
+    <!-- ============ JSON‑LD: BreadcrumbList ============ -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://invites.devtem.org"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Privacy Policy",
+                    "item": "https://invites.devtem.org/privacy"
+                }
+            ]
+        }
+    </script>
+
+    <!-- ============ JSON‑LD: PrivacyPolicy (optional) ============ -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Privacy Policy",
+            "description": "D invites privacy policy – how we collect, use, and protect your personal data.",
+            "url": "https://invites.devtem.org/privacy"
+        }
+    </script>
+
     <style>
         /* ---------- Legal page styles ---------- */
-        .legal-section {
-            padding: 60px 0 80px;
-        }
-        .legal-card {
-            max-width: 780px;
-            margin: 0 auto;
-            padding: 48px 56px;
-            border-radius: var(--radius-lg);
-        }
-        .legal-card h1 {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            margin-bottom: 8px;
-        }
-        .legal-card .last-updated {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 32px;
-        }
-        .legal-card h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 32px 0 12px;
-        }
-        .legal-card p {
-            font-size: 15px;
-            line-height: 1.7;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-        .legal-card ul {
-            padding-left: 24px;
-            margin-bottom: 16px;
-        }
-        .legal-card ul li {
-            font-size: 15px;
-            line-height: 1.7;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
+        .legal-section { padding: 60px 0 80px; }
+        .legal-card { max-width: 780px; margin: 0 auto; padding: 48px 56px; border-radius: var(--radius-lg); }
+        .legal-card h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+        .legal-card .last-updated { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+        .legal-card h2 { font-size: 20px; font-weight: 700; margin: 32px 0 12px; }
+        .legal-card p { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; }
+        .legal-card ul { padding-left: 24px; margin-bottom: 16px; }
+        .legal-card ul li { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 6px; }
         @media (max-width: 640px) {
-            .legal-card {
-                padding: 28px 20px;
-            }
-            .legal-card h1 {
-                font-size: 26px;
-            }
+            .legal-card { padding: 28px 20px; }
+            .legal-card h1 { font-size: 26px; }
         }
     </style>
 </head>
@@ -70,7 +150,7 @@
     <header class="site-nav">
         <div class="container">
             <a href="/" class="nav-brand">
-                <img src="/assets/img/logo.png" alt="DevTemple Invites logo" height="35">
+                <img src="/assets/img/logo.png" alt="D invites – event pages" height="35">
             </a>
             <nav class="nav-links">
                 <a href="/#features">Features</a>
@@ -151,7 +231,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <a href="/" class="nav-brand" style="margin-bottom:12px; display:inline-flex;">
-                        <img src="/assets/img/logo.png" alt="DevTemple Invites logo" height="35">
+                        <img src="/assets/img/logo.png" alt="D invites – event pages" height="35">
                     </a>
                     <p class="footer-brand-tagline">
                         Create stunning invitation pages, manage RSVPs, and celebrate life's moments with the people you love.
@@ -195,4 +275,4 @@
 
     <script src="assets/js/global.js"></script>
 </body>
-</html>
+    </html>
