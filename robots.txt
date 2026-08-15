@@ -3,4 +3,4 @@ Disallow: /admin/
 Disallow: /private/
 Disallow: /netlify/
 Allow: /
-Sitemap: https://devtem.org/sitemap.xml
+Sitemap: https://invites.devtem.org/sitemap.xml
